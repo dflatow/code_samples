@@ -2,7 +2,7 @@
 
 This repository contains projects that demonstrate my programing experience in a few programing languages.
 
-## Projects
+## Samples
 * **TrailblazerProject:** 
   * Graph search problems: depth-first, breadth-first, Dijkstra's, A*. 
   * Implementation: C++
