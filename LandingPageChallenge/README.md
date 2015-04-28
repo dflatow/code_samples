@@ -1,3 +1,5 @@
-# TrailblazerProject
+# LandingPageChallenge
 
-This repository contains the Trailblazer project
+This repository contains the Landing Page Challenge.
+
+
