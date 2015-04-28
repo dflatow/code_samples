@@ -1,0 +1,121 @@
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,epsfig, graphicx, listings}
+\usepackage[left=1in,top=1in,right=1in]{geometry}
+\title{Portfolio Rebalancing}
+\author{David Flatow}
+\date{}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\bhat}{\hat{\beta}}
+\newcommand{\tB}{\tilde{\beta}}
+\newcommand{\B}{\beta}
+\newcommand{\tX}{\tilde{X}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Det}{\textbf{det}}
+\newcommand{\benum}{\begin{enumerate}}
+\newcommand{\enum}{\end{enumerate}}
+\newcommand{\bmat}{\begin{bmatrix}}
+\newcommand{\emat}{\end{bmatrix}}
+\newcommand{\one}{\textbf{1}}
+\newcommand{\zero}{\textbf{0}}
+\newcommand{\order}{\mathcal{O}}
+\newcommand{\br}{\bigg]}
+\newcommand{\bl}{\bigg[}
+\newcommand{\pr}{\bigg)}
+\newcommand{\pl}{\bigg(}
+\newcommand{\eps}{\varepsilon}
+
+
+\newcommand{\e}{\varepsilon}
+\newcommand{\bb}{\mathbb}
+\newcommand{\var}{\text{Var}}
+\newcommand{\cov}{\text{Cov}}
+\newcommand{\bcase}{\begin{cases}}
+\newcommand{\ecase}{\end{cases}}
+\newcommand{\blist}{\begin{enumerate}}
+\newcommand{\elist}{\end{enumerate}}
+\newcommand{\bproof}{\begin{proof}}
+\newcommand{\eproof}{\end{proof}}
+\newcommand{\bsol}{\bproof[Solution]}
+\newcommand{\esol}{\eproof}
+\newcommand{\til}{\tilde}
+\newcommand{\bbar}{\overline}
+\newcommand{\grad}{\nabla}
+\newcommand{\argmax}{\text{argmax}}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{df}[thm]{Definition}
+
+
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=R,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true, 
+  tabsize=3
+}
+
+\begin{document}
+
+\maketitle
+
+\blist
+\item We consider the problem of rebalancing a portfolio of assets over multiple periods. We let $h_t \in \R^n$ denote the vector of our dollar value holdings in $n$ positions. We will work with the portfolio weight vector, defined as $w_t = h_t / (\one^Th_t)$, where we assume that $\one^Th_t > 0$, \textit{i.e.}, the total portfolio value is positive.
+
+The \textit{target portfolio weight vector} $w^*$ is defined as the solution of the problem,
+
+\begin{equation*}
+\begin{aligned}
+& \text{maximize}
+& & \mu^Tw - \frac{\gamma}{2}w^T\Sigma w \\
+& \text{subject to}
+& & \one^Tw = 1 
+\end{aligned}
+\end{equation*}
+
+where $w \in \R^n$ is the variable, $\mu$ is the mean return, $\Sigma \in \mathbb{S}^n_{++}$ is the return covariance, and $\gamma > 0$ is the risk aversion parameter. The data $\mu, \Sigma, \text{and } \gamma$ are given. In words, the target weights maximize the risk-adjusted expected return.
+
+At the beginning of each period $t$ we are allowed to rebalance the portfolio by buying and selling assets. We call the post-trade portfolio weights $\tilde{w}_t$. They are found by solving the (rebalancing) problem
+
+\begin{equation*}
+\begin{aligned}
+& \text{maximize}
+& & \mu^Tw - \frac{\gamma}{2}w^T\Sigma w - \kappa^T|w - w_t|\\
+& \text{subject to}
+& & \one^Tw = 1 
+\end{aligned}
+\end{equation*}
+
+with variable $w \in \R^n$, where $\kappa \in \R^n_+$ is the vector of (so-called linear) transaction costs for the assets. (For example, these could be model bid/ask spread.) Thus we choose the post-trade weights to maximize the risk-adjusted expected return, minus the transaction costs associated with rebalancing the portfolio. Note the pre-trade weight vector $w_t$ is known at the time we solve the problem. If we have $\tilde{w}_t = w_t$, it means that no rebalancing is done at the beginning of period $t$; we simply hold our current portfolio. 
+
+After holding the rebalanced portfolio over the investment period, the dollar value of our portfolio becomes $h_{t+1} = \textbf{diag}(r_t)\tilde{h}_t$, where $r_t \in \R_{++}^n$ is the (random) vector of asset returns over period $t$, and $\tilde{h}_t$ is the post-trade portfolio given in dollar values. The next weight vector is then given by
+
+$$ w_{t+1} = \frac{\textbf{diag}(r_t)\tilde{w}_t}{r_t^T\tilde{w}_t}$$
+
+The standard model is that $r_t$ are IID random variables with mean and covariance $\mu$ and $ \Sigma$, but this is not relevant in this problem.
+
+Starting from $w_1 = w^*$, compute a sequence of portfolio weights $\tilde{w_t}$ for $t = 1, \dots, T$. For each $t$, find $\tilde{w}_t$ by solving the rebalancing problem (with $w_t$ a known constant); then generate a vector of return $r_t$ to compute $w_{t+1}$.
+
+Report the fraction of periods in which the no-trade condition holds and the fraction of periods in which the solution has only zero (or negligible) trades. Carry this out for two values of $\kappa$ and comment.
+\elist
+
+\end{document}
